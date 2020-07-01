@@ -16,8 +16,5 @@ namespace CS_Homework
         }
     }
 
-    class BoxA
-    {
-
-    }
+    
 }
