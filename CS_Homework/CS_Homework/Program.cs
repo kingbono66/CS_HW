@@ -31,8 +31,8 @@ namespace CS_Homework
     }    
     class GroundMagicalOrc : GroundOrc
     {
-        private int mp;
-        private int masteryGrade;
+        protected int mp;
+        protected int masteryGrade;
     }
     class Grunt : GroundOrc
     {
