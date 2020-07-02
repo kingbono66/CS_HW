@@ -7,6 +7,7 @@ using static System.Console;
 
 namespace CS_Homework
 {
+    //몬스터 상속관계 만들기
     class Program
     {
         static void Main(string[] args)
