@@ -29,7 +29,7 @@ namespace CS_Homework
                     //WriteLine($"cycle: {testTime.uCurrentEndTick}  {testTime.uStartTick}  :  {testTime.uCurrentEndTick - testTime.uStartTick}");
                     testTime.uStartTick = testTime.uCurrentEndTick;
                     TestProc();
-                    flushKey();
+                    FlushKey();
                     WriteLine("time pass");
                 }
             }
@@ -109,7 +109,7 @@ namespace CS_Homework
 
         }
 
-        private static void flushKey()
+        private static void FlushKey()
         {
             while (KeyAvailable)
                 ReadKey(true);
