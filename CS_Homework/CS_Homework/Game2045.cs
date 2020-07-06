@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -16,6 +17,11 @@ namespace CS_Homework
         private TimeManager timer;
         private int playerXPos, playerYPos;
         private Painter painter;
+        private Screen[,] screenArr;
+        private Player player;
+        private Random random;
+        private ArrayList enemyList;
+
 
         internal void StartGame()
         {
@@ -24,19 +30,37 @@ namespace CS_Homework
 
             //시작화면
             painter.DrawStartScreen();
-            painter.DrawCharacter(true, playerXPos, playerYPos);
             while (true)
             {
                 //화면 그리기
                 if (isHeaderChanged) painter.DrawHeader(); isHeaderChanged = false;
                 if (isFooterChanged) painter.DrawFooter(); isFooterChanged = false;
-                
+                painter.DrawMainScreen(screenArr);
                 //사용자 조작            
                 if (timer.IsElapsed())
                 {
                     PlayerProc();
                     FlushKey();
+                    if (random.Next(0, ENEMY_FREQ) == 1)
+                    {
+                        Enemy enemy = new Enemy();
+                        enemyList.Add(enemy);
+                        enemy.SetPos(screenArr);
+                    }
+                    for ( int i = 0; i < enemyList.Count; i++)
+                    {
+                        if (((Enemy)enemyList[i]).Move(screenArr))
+                            ((Enemy)enemyList[i]).SetPos(screenArr);
+                        else
+                            enemyList.RemoveAt(i--);
+                    }
+
+
+                   
                 }
+                //적 조작
+                
+                
             }
 
             //좌표수정
@@ -64,7 +88,7 @@ namespace CS_Homework
             if (KeyAvailable)
             {
                 keys = ReadKey(true).Key;
-                painter.DrawCharacter(false, playerXPos, playerYPos);
+                player.DeletePos(screenArr, playerXPos, playerYPos);
                 switch (keys)
                 {
                     case ConsoleKey.UpArrow:
@@ -80,9 +104,8 @@ namespace CS_Homework
                         playerXPos++;
                         break;
                 }
-                painter.DrawCharacter(true, playerXPos, playerYPos);
+                player.SetPos(screenArr, playerXPos, playerYPos);
             }
-
         }
 
         
@@ -97,10 +120,19 @@ namespace CS_Homework
             painter = new Painter();
             isHeaderChanged = true;
             isFooterChanged = true;
+            screenArr = new Screen[WINDOW_WIDTH + 5, WINDOW_HEIGHT - HEADER_HEIGHT - FOOTER_HEIGHT + 5];
+            for( int i = 0; i < WINDOW_HEIGHT - HEADER_HEIGHT - FOOTER_HEIGHT + 5; i++)
+            {
+                for (int j = 0; j < WINDOW_WIDTH + 5; j++)
+                    screenArr[j, i] = Screen.BLANK;
+            }
             playerXPos = 20;
-            playerYPos = 20;
+            playerYPos = 15;
+            player = new Player();
+            player.SetPos(screenArr, playerXPos, playerYPos);
+            random = new Random();
+            enemyList = new ArrayList();
             SetWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-
 
 
 

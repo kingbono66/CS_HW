@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,6 +44,39 @@ namespace CS_Homework
             DrawVertical(WINDOW_WIDTH * 2 / 3, footerStartPos, FOOTER_HEIGHT);
             SetCursorPosition(0, 0);
         }
+
+        internal void DrawMainScreen(Screen[,] screenArr)
+        {
+            int screenHeiht = WINDOW_HEIGHT - FOOTER_HEIGHT;
+            for( int i = HEADER_HEIGHT; i < screenHeiht; i++)
+            {
+                SetCursorPosition(0, i);
+                for( int j = 0; j < WINDOW_WIDTH; j++)
+                {
+                    switch(screenArr[j,i - HEADER_HEIGHT])
+                    {
+                        case Screen.PLAYER: BackgroundColor = ConsoleColor.White; 
+                            Write(" ");
+                            BackgroundColor = ConsoleColor.Black;
+                            break;
+                        case Screen.D_LAUNCHER:
+                            Write("=");
+                            break;
+                        case Screen.ENEMY:
+                            BackgroundColor = ConsoleColor.Red;
+                            Write(" ");
+                            BackgroundColor = ConsoleColor.Black;
+                            break;
+                        case Screen.S_LAUNCHER:
+                            Write("-");
+                            break;
+                        default: Write(" ");
+                            break;
+                    }
+                }
+            }
+        }
+
         private void DrawVertical(int startPosX, int startPosY, int lineNum)
         {
             for (int i = 0; i < lineNum; i++)
@@ -80,23 +114,7 @@ namespace CS_Homework
             WriteLine("아무키나 누르세요"); ReadKey();
             Clear();
         }
-        public void DrawCharacter(bool isDraw, int playerXPos, int playerYPos)  //좌하단
-        {
-            if (isDraw)
-            {
-                BackgroundColor = ConsoleColor.White;
-                SetCursorPosition(playerXPos, playerYPos); Write("       ");
-                SetCursorPosition(playerXPos + 2, playerYPos - 1); Write("  ");
-                BackgroundColor = ConsoleColor.Black; Write("==");
-            }
-            else
-            {
-                SetCursorPosition(playerXPos, playerYPos); Write("       ");
-                SetCursorPosition(playerXPos + 2, playerYPos - 1); Write("    ");
-            }
-
-            SetCursorPosition(0, 0);
-        }
+        
     }
 
     
