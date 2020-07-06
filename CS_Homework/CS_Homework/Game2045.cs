@@ -15,7 +15,7 @@ namespace CS_Homework
         private bool isFooterChanged;
         private TimeManager timer;
         private int playerXPos, playerYPos;
-
+        private Painter painter;
 
         internal void StartGame()
         {
@@ -23,19 +23,18 @@ namespace CS_Homework
             InitializeGame();
 
             //시작화면
-            DrawStartScreen();
-            DrawCharacter(true);
+            painter.DrawStartScreen();
+            painter.DrawCharacter(true, playerXPos, playerYPos);
             while (true)
             {
                 //화면 그리기
-                if (isHeaderChanged) DrawHeader();
-                if (isFooterChanged) DrawFooter();
-
-                //사용자 조작
-            
+                if (isHeaderChanged) painter.DrawHeader(); isHeaderChanged = false;
+                if (isFooterChanged) painter.DrawFooter(); isFooterChanged = false;
+                
+                //사용자 조작            
                 if (timer.IsElapsed())
                 {
-                    TestProc();
+                    PlayerProc();
                     FlushKey();
                 }
             }
@@ -59,13 +58,13 @@ namespace CS_Homework
                 ReadKey(true);
         }
 
-        private void TestProc()
+        private void PlayerProc()
         {
             ConsoleKey keys;
             if (KeyAvailable)
             {
                 keys = ReadKey(true).Key;
-                DrawCharacter(false);
+                painter.DrawCharacter(false, playerXPos, playerYPos);
                 switch (keys)
                 {
                     case ConsoleKey.UpArrow:
@@ -81,91 +80,13 @@ namespace CS_Homework
                         playerXPos++;
                         break;
                 }
-                DrawCharacter(true);
+                painter.DrawCharacter(true, playerXPos, playerYPos);
             }
 
         }
 
         
-        private void DrawHeader()
-        {
-            int i = 0;
-
-            SetCursorPosition(0, 0);
-            for ( i = 0; i < HEADER_HEIGHT; i++)
-            {
-                for (int j = 0; j < WINDOW_WIDTH; j++)
-                    Write(" ");
-                WriteLine();
-            }
-            SetCursorPosition(0, 0);
-            for (i = 0; i < WINDOW_WIDTH; i++)
-                Write("=");
-            SetCursorPosition(0, HEADER_HEIGHT - 1);
-            for (i = 0; i < WINDOW_WIDTH; i++)
-                Write("=");
-            DrawVertical(0, 0, HEADER_HEIGHT);
-            DrawVertical(WINDOW_WIDTH - 1, 0, HEADER_HEIGHT);
-            
-            SetCursorPosition((WINDOW_WIDTH - TITLE.Length) / 2, HEADER_HEIGHT / 2);
-            ForegroundColor = ConsoleColor.Green;
-            Write(TITLE);
-            SetCursorPosition(WINDOW_WIDTH - (DESCRIPTION.Length + 1), HEADER_HEIGHT / 2 + 1);
-            ForegroundColor = ConsoleColor.Blue;
-            Write(DESCRIPTION);
-            ForegroundColor = ConsoleColor.White;
-            SetCursorPosition(0, 0);
-
-            isHeaderChanged = false;
-        }
-        private void DrawFooter()
-        {
-            int i = 0;
-            int footerStartPos = WINDOW_HEIGHT - FOOTER_HEIGHT;
-
-            SetCursorPosition(0, footerStartPos);
-            for (i = 0; i < FOOTER_HEIGHT; i++)
-            {
-                for (int j = 0; j < WINDOW_WIDTH; j++)
-                    Write(" ");
-                WriteLine();
-            }
-            SetCursorPosition(0, footerStartPos);
-            for (i = 0; i < WINDOW_WIDTH; i++)
-                Write("=");
-            SetCursorPosition(0, WINDOW_HEIGHT - 1);
-            for (i = 0; i < WINDOW_WIDTH; i++)
-                Write("=");
-            DrawVertical(0, footerStartPos, FOOTER_HEIGHT);
-            DrawVertical(WINDOW_WIDTH -1 , footerStartPos, FOOTER_HEIGHT);
-
-            DrawVertical(WINDOW_WIDTH/3, footerStartPos, FOOTER_HEIGHT);
-            DrawVertical(WINDOW_WIDTH * 2 / 3, footerStartPos, FOOTER_HEIGHT);
-            SetCursorPosition(0, 0);
-
-            isFooterChanged = false;
-        }
-        private void DrawVertical(int startPosX, int startPosY, int lineNum)
-        {
-            for( int i = 0; i < lineNum; i++)
-            { 
-                SetCursorPosition(startPosX, startPosY + i);
-                Write("|");
-            }
-        }
-
-
-        private void DrawStartScreen()
-        {
-            WriteLine("게임을 시작합니다");
-
-
-
-
-
-            WriteLine("아무키나 누르세요"); ReadKey();
-            Clear();
-        }
+        
 
         private void InitializeGame()
         {
@@ -173,6 +94,7 @@ namespace CS_Homework
             CursorVisible = false;
             timer = new TimeManager();
             timer.SetStart();
+            painter = new Painter();
             isHeaderChanged = true;
             isFooterChanged = true;
             playerXPos = 20;
@@ -184,23 +106,7 @@ namespace CS_Homework
 
             Clear();
         }
-        private void DrawCharacter(bool isDraw)  //좌하단
-        {
-            if(isDraw)
-            {
-                BackgroundColor = ConsoleColor.White;
-                SetCursorPosition(playerXPos, playerYPos); Write("       ");
-                SetCursorPosition(playerXPos + 2, playerYPos - 1); Write("  ");
-                BackgroundColor = ConsoleColor.Black; Write("==");
-            }
-            else
-            {
-                SetCursorPosition(playerXPos, playerYPos); Write("       ");
-                SetCursorPosition(playerXPos + 2, playerYPos - 1); Write("    ");
-            }
-
-            SetCursorPosition(0, 0);
-        }
+        
     }
 
    

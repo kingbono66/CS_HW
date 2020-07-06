@@ -11,41 +11,12 @@ namespace CS_Homework
 {
     class Program
     {
-
         static void Main(string[] args)
         {
             Game2045 game2045 = new Game2045();
             game2045.StartGame();
-
-
-
-            /*
-            Stopwatch stopwatch = Stopwatch.StartNew();
-            long elapsedTicks = 0;
-            while(true)
-            {
-                stopwatch.Stop();
-                WriteLine(stopwatch.ElapsedTicks);
-                elapsedTicks += stopwatch.ElapsedTicks; 
-                if( elapsedTicks > 500)
-                {
-                    WriteLine(elapsedTicks);
-                    stopwatch.Reset();
-                    elapsedTicks = 0;
-                    //
-                }
-                else
-                {
-                    stopwatch.Reset();
-                }
-            }
-            */
-
-
         }
-
-       
     }
-
-
 }
+
+//질문 타임매니저나 페인터처럼 오직 하나만 존재해야하는 클래스는 스태틱으로 만드는게 나은지

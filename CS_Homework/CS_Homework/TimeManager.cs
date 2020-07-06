@@ -33,3 +33,26 @@ namespace CS_Homework
         }
     }
 }
+
+//스톱와치
+/*
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            long elapsedTicks = 0;
+            while(true)
+            {
+                stopwatch.Stop();
+                WriteLine(stopwatch.ElapsedTicks);
+                elapsedTicks += stopwatch.ElapsedTicks; 
+                if( elapsedTicks > 500)
+                {
+                    WriteLine(elapsedTicks);
+                    stopwatch.Reset();
+                    elapsedTicks = 0;
+                    //
+                }
+                else
+                {
+                    stopwatch.Reset();
+                }
+            }
+            */
