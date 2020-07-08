@@ -9,33 +9,49 @@ namespace CS_Homework
 {
     class Player
     {
+        private int xPos;
+        private int yPos;
+        private int hp;
+        private int att;
 
+        public int XPos { get => xPos; set => xPos = value; }
+        public int YPos { get => yPos; set => yPos = value; }
+        public int Hp { get => hp; set => hp = value; }
+        public int Att { get => att; set => att = value; }
 
-        public void SetPos(Screen[,] screenArr, int x, int y)
+        public Player(int x, int y)
         {
-            screenArr[x + 2, y] = Screen.PLAYER;
-            screenArr[x + 3, y] = Screen.PLAYER;
-            screenArr[x + 4, y] = Screen.D_LAUNCHER;
-            screenArr[x + 0, y + 1] = Screen.PLAYER;
-            screenArr[x + 1, y + 1] = Screen.PLAYER;
-            screenArr[x + 2, y + 1] = Screen.PLAYER;
-            screenArr[x + 3, y + 1] = Screen.PLAYER;
-            screenArr[x + 4, y + 1] = Screen.PLAYER;
-            screenArr[x + 5, y + 1] = Screen.PLAYER;
-            screenArr[x + 6, y + 1] = Screen.PLAYER;
+            xPos = x;
+            YPos = y;
+            hp = 100;
+            att = 15;
         }
-        public void DeletePos(Screen[,] screenArr, int x, int y)
+
+        public void SetPos(Screen[,] screenArr )
         {
-            screenArr[x + 2, y] = Screen.BLANK;
-            screenArr[x + 3, y] = Screen.BLANK;
-            screenArr[x + 4, y] = Screen.BLANK;
-            screenArr[x + 0, y + 1] = Screen.BLANK;
-            screenArr[x + 1, y + 1] = Screen.BLANK;
-            screenArr[x + 2, y + 1] = Screen.BLANK;
-            screenArr[x + 3, y + 1] = Screen.BLANK;
-            screenArr[x + 4, y + 1] = Screen.BLANK;
-            screenArr[x + 5, y + 1] = Screen.BLANK;
-            screenArr[x + 6, y + 1] = Screen.BLANK;
+            screenArr[xPos + 2, yPos] = Screen.PLAYER;
+            screenArr[xPos + 3, yPos] = Screen.PLAYER;
+            screenArr[xPos + 4, yPos] = Screen.D_LAUNCHER;
+            screenArr[xPos + 0, yPos + 1] = Screen.PLAYER;
+            screenArr[xPos + 1, yPos + 1] = Screen.PLAYER;
+            screenArr[xPos + 2, yPos + 1] = Screen.PLAYER;
+            screenArr[xPos + 3, yPos + 1] = Screen.PLAYER;
+            screenArr[xPos + 4, yPos + 1] = Screen.PLAYER;
+            screenArr[xPos + 5, yPos + 1] = Screen.PLAYER;
+            screenArr[xPos + 6, yPos + 1] = Screen.PLAYER;
+        }
+        public void DeletePos(Screen[,] screenArr)
+        {
+            screenArr[xPos + 2, YPos] = Screen.BLANK;
+            screenArr[xPos + 3, YPos] = Screen.BLANK;
+            screenArr[xPos + 4, YPos] = Screen.BLANK;
+            screenArr[xPos + 0, YPos + 1] = Screen.BLANK;
+            screenArr[xPos + 1, YPos + 1] = Screen.BLANK;
+            screenArr[xPos + 2, YPos + 1] = Screen.BLANK;
+            screenArr[xPos + 3, YPos + 1] = Screen.BLANK;
+            screenArr[xPos + 4, YPos + 1] = Screen.BLANK;
+            screenArr[xPos + 5, YPos + 1] = Screen.BLANK;
+            screenArr[xPos + 6, YPos + 1] = Screen.BLANK;
         }
 
     }

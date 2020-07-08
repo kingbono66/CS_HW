@@ -15,16 +15,18 @@ namespace CS_Homework
         private bool isHeaderChanged;
         private bool isFooterChanged;
         private TimeManager timer;
-        private int playerXPos, playerYPos;
         private Painter painter;
         private Screen[,] screenArr;
         private Player player;
         private Random random;
         private ArrayList enemyList;
+        private Calculator calculator;
+        private int frameCounter;
 
 
         internal void StartGame()
         {
+            int msgTimer = 0;
             //초기화
             InitializeGame();
 
@@ -36,17 +38,23 @@ namespace CS_Homework
                 if (isHeaderChanged) painter.DrawHeader(); isHeaderChanged = false;
                 if (isFooterChanged) painter.DrawFooter(); isFooterChanged = false;
                 painter.DrawMainScreen(screenArr);
-                //사용자 조작            
+                painter.DrawPlayerInfo(player);
+                painter.DrawGameInfo(frameCounter);
+                //1프레임 사이클            
                 if (timer.IsElapsed())
                 {
+                    frameCounter++;
+                    //사용자 조작
                     PlayerProc();
                     FlushKey();
+                    //적 생성
                     if (random.Next(0, ENEMY_FREQ) == 1)
                     {
                         Enemy enemy = new Enemy();
                         enemyList.Add(enemy);
                         enemy.SetPos(screenArr);
                     }
+                    //적 이동
                     for ( int i = 0; i < enemyList.Count; i++)
                     {
                         if (((Enemy)enemyList[i]).Move(screenArr))
@@ -54,26 +62,23 @@ namespace CS_Homework
                         else
                             enemyList.RemoveAt(i--);
                     }
+                    //충돌판정
+                    int damaged = calculator.Collide(screenArr, player, enemyList);
+                    if (damaged > 0)
+                    {
+                        painter.DrawDescription(MsgType.DAMAGE, damaged);
+                        msgTimer = 10;
+                    }
+                    if(--msgTimer < 0)
+                        painter.DrawDescription(MsgType.CLEAR, 0);
 
 
-                   
+
                 }
-                //적 조작
-                
-                
+                if (player.Hp <= 0)
+                    break;
             }
-
-            //좌표수정
-
-
-            //충돌판정
-
-
-            //변동사항 반영
-
-
-            //엔딩화면(점수표), 게임오버
-
+            painter.DrawEnding();
         }
 
         private void FlushKey()
@@ -88,23 +93,23 @@ namespace CS_Homework
             if (KeyAvailable)
             {
                 keys = ReadKey(true).Key;
-                player.DeletePos(screenArr, playerXPos, playerYPos);
+                player.DeletePos(screenArr);
                 switch (keys)
                 {
                     case ConsoleKey.UpArrow:
-                        playerYPos--;
+                        player.YPos--;
                         break;
                     case ConsoleKey.DownArrow:
-                        playerYPos++;
+                        player.YPos++;
                         break;
                     case ConsoleKey.LeftArrow:
-                        playerXPos--;
+                        player.XPos--;
                         break;
                     case ConsoleKey.RightArrow:
-                        playerXPos++;
+                        player.XPos++;
                         break;
                 }
-                player.SetPos(screenArr, playerXPos, playerYPos);
+                player.SetPos(screenArr);
             }
         }
 
@@ -113,6 +118,7 @@ namespace CS_Homework
 
         private void InitializeGame()
         {
+            SetWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
             WriteLine("게임 초기화 중입니다");
             CursorVisible = false;
             timer = new TimeManager();
@@ -126,13 +132,12 @@ namespace CS_Homework
                 for (int j = 0; j < WINDOW_WIDTH + 5; j++)
                     screenArr[j, i] = Screen.BLANK;
             }
-            playerXPos = 20;
-            playerYPos = 15;
-            player = new Player();
-            player.SetPos(screenArr, playerXPos, playerYPos);
+            player = new Player(INITIAL_XPOS, INITIAL_YPOS);
+            player.SetPos(screenArr);
             random = new Random();
             enemyList = new ArrayList();
-            SetWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+            calculator = new Calculator();
+            frameCounter = 0;
 
 
 

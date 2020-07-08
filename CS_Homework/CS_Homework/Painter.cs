@@ -45,6 +45,39 @@ namespace CS_Homework
             SetCursorPosition(0, 0);
         }
 
+        internal void DrawGameInfo(int frameCounter)
+        {
+            SetCursorPosition(WINDOW_WIDTH * 2 / 3 + 2, WINDOW_HEIGHT - FOOTER_HEIGHT + 1); Write("경과시간: ");
+            ForegroundColor = ConsoleColor.Blue; 
+            Write(frameCounter);
+            ForegroundColor = ConsoleColor.White;
+            SetCursorPosition(WINDOW_WIDTH * 2 / 3 + 2, WINDOW_HEIGHT - FOOTER_HEIGHT + 2); Write("점수: ");
+            ForegroundColor = ConsoleColor.Magenta;
+            Write("55");
+
+
+            ForegroundColor = ConsoleColor.White;
+            SetCursorPosition(0,0);
+        }
+
+        internal void DrawPlayerInfo(Player player)
+        {
+            ClearWindow(WindowPos.LEFT);
+            SetCursorPosition( 2, WINDOW_HEIGHT - FOOTER_HEIGHT + 1); Write("LEVEL: ");
+            ForegroundColor = ConsoleColor.Yellow;
+            Write("1");
+            ForegroundColor = ConsoleColor.White;
+            SetCursorPosition(2, WINDOW_HEIGHT - FOOTER_HEIGHT + 2); Write("HP/ATT: ");
+            ForegroundColor = ConsoleColor.Yellow;
+            Write(player.Hp + " / " + player.Att);
+            ForegroundColor = ConsoleColor.White;
+            SetCursorPosition(2, WINDOW_HEIGHT - FOOTER_HEIGHT + 3); Write("EXP: ");
+            ForegroundColor = ConsoleColor.Yellow;
+            Write("44");
+            ForegroundColor = ConsoleColor.White;
+            SetCursorPosition(0,0);
+        }
+
         internal void DrawMainScreen(Screen[,] screenArr)
         {
             int screenHeiht = WINDOW_HEIGHT - FOOTER_HEIGHT;
@@ -74,6 +107,39 @@ namespace CS_Homework
                             break;
                     }
                 }
+            }
+        }
+
+        internal void DrawEnding()
+        {
+            ReadKey();
+        }
+
+        internal void DrawDescription(MsgType msgType, int damaged)
+        {
+            switch( msgType)
+            {
+                case MsgType.DAMAGE: SetCursorPosition(WINDOW_WIDTH / 3 + 2, WINDOW_HEIGHT - FOOTER_HEIGHT + 1); Write("피격당했습니다");
+                    SetCursorPosition(WINDOW_WIDTH / 3 + 2, WINDOW_HEIGHT - FOOTER_HEIGHT + 2);
+                    ForegroundColor = ConsoleColor.Red;
+                    Write($" {damaged}");
+                    ForegroundColor = ConsoleColor.White;
+                    Write("의 데미지를 입었습니다!!!");
+                    SetCursorPosition(0, 0);
+                    break;
+                case MsgType.CLEAR: ClearWindow(WindowPos.MIDDLE);                    
+                    break;
+                default: break;
+            }
+
+        }
+        private void ClearWindow(WindowPos window)
+        {
+            for (int i = 0; i < FOOTER_HEIGHT - 2; i++)
+            {
+                SetCursorPosition(WINDOW_WIDTH  * (int)window / 3 + 1, WINDOW_HEIGHT - FOOTER_HEIGHT + 1 + i);
+                for (int j = 0; j < WINDOW_WIDTH / 3 - 2; j++)
+                    Write(" ");
             }
         }
 

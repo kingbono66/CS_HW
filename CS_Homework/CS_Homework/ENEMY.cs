@@ -14,7 +14,12 @@ namespace CS_Homework
         private int hp;
         private double currentXPos;
         private double currentYPos;
-        Random random = new Random();        
+        Random random = new Random();
+
+        public double CurrentXPos { get => currentXPos; set => currentXPos = value; }
+        public double CurrentYPos { get => currentYPos; set => currentYPos = value; }
+        public int Att { get => att; set => att = value; }
+        public int Hp { get => hp; set => hp = value; }
 
         public Enemy()
         {
@@ -47,7 +52,7 @@ namespace CS_Homework
                 return true;
         }
 
-        private void DeletePos(Screen[,] screenArr)
+        public void  DeletePos(Screen[,] screenArr)
         {
             screenArr[(int)currentXPos, (int)currentYPos] = Screen.BLANK;
             screenArr[(int)currentXPos + 1, (int)currentYPos] = Screen.BLANK;
