@@ -32,6 +32,7 @@ namespace CS_Homework
 
             //시작화면
             painter.DrawStartScreen();
+            timer.SetPlayTimeStart();
             while (true)
             {
                 //화면 그리기
@@ -39,7 +40,7 @@ namespace CS_Homework
                 if (isFooterChanged) painter.DrawFooter(); isFooterChanged = false;
                 painter.DrawMainScreen(screenArr);
                 painter.DrawPlayerInfo(player);
-                painter.DrawGameInfo(frameCounter);
+                painter.DrawGameInfo(frameCounter, timer.GetPlayTime());
                 //1프레임 사이클            
                 if (timer.IsElapsed())
                 {

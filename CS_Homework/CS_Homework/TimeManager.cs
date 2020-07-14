@@ -14,12 +14,11 @@ namespace CS_Homework
         public static extern uint GetTickCount();
         private uint baseTick;
         private uint currentTick;
+        private int playTime;
 
-        public void SetStart()
-        {
-            baseTick = GetTickCount();
-        }
-        
+
+        public void SetStart() => baseTick = GetTickCount();
+
         public bool IsElapsed()
         {
             currentTick = GetTickCount();
@@ -31,6 +30,8 @@ namespace CS_Homework
             else
                 return false;
         }
+        public void SetPlayTimeStart() => playTime = (int)GetTickCount() / 1000;
+        public int GetPlayTime() => (int)GetTickCount() / 1000 - playTime;
     }
 }
 
