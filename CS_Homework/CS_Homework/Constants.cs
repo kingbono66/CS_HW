@@ -23,6 +23,7 @@ namespace CS_Homework
 
         public const int INITIAL_XPOS = 20;
         public const int INITIAL_YPOS = 10;
+        public const int MSG_DURATION = 2;  //시스템 메시지 지속시간
 
     }
 }

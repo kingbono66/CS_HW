@@ -68,7 +68,7 @@ namespace CS_Homework
                     if (damaged > 0)
                     {
                         painter.DrawDescription(MsgType.DAMAGE, damaged);
-                        msgTimer = 10;
+                        msgTimer = MSG_DURATION * frameCounter / timer.GetPlayTime();
                     }
                     if(--msgTimer < 0)
                         painter.DrawDescription(MsgType.CLEAR, 0);
@@ -97,18 +97,10 @@ namespace CS_Homework
                 player.DeletePos(screenArr);
                 switch (keys)
                 {
-                    case ConsoleKey.UpArrow:
-                        player.YPos--;
-                        break;
-                    case ConsoleKey.DownArrow:
-                        player.YPos++;
-                        break;
-                    case ConsoleKey.LeftArrow:
-                        player.XPos--;
-                        break;
-                    case ConsoleKey.RightArrow:
-                        player.XPos++;
-                        break;
+                    case ConsoleKey.UpArrow: if(player.YPos > 0 ) player.YPos--; break;
+                    case ConsoleKey.DownArrow: if (player.YPos < (WINDOW_HEIGHT - HEADER_HEIGHT - FOOTER_HEIGHT - 2)) player.YPos++; break;
+                    case ConsoleKey.LeftArrow: if (player.XPos > 0 ) player.XPos--; break;
+                    case ConsoleKey.RightArrow:if (player.XPos < WINDOW_WIDTH - 7) player.XPos++; break;
                 }
                 player.SetPos(screenArr);
             }

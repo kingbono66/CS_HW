@@ -50,7 +50,7 @@ namespace CS_Homework
             if (playTime == 0) return;
             SetCursorPosition(WINDOW_WIDTH * 2 / 3 + 2, WINDOW_HEIGHT - FOOTER_HEIGHT + 1); Write("경과시간/프레임레이트: ");
             ForegroundColor = ConsoleColor.Blue; 
-            Write(playTime + "초/" + frameCounter / playTime);
+            Write(playTime + "초/ " + frameCounter / playTime + "fps");
             ForegroundColor = ConsoleColor.White;
             SetCursorPosition(WINDOW_WIDTH * 2 / 3 + 2, WINDOW_HEIGHT - FOOTER_HEIGHT + 2); Write("점수: ");
             ForegroundColor = ConsoleColor.Magenta;
