@@ -104,6 +104,9 @@ namespace CS_Homework
                         case Screen.S_LAUNCHER:
                             Write("-");
                             break;
+                        case Screen.BASIC_MISSILE:
+                            Write("＠");
+                            break;
                         default: Write(" ");
                             break;
                     }
@@ -113,6 +116,8 @@ namespace CS_Homework
 
         internal void DrawEnding()
         {
+            Clear();
+            WriteLine("끝");
             ReadKey();
         }
 

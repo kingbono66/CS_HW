@@ -20,6 +20,7 @@ namespace CS_Homework
         private Player player;
         private Random random;
         private ArrayList enemyList;
+        private ArrayList missileList;
         private Calculator calculator;
         private int frameCounter;
 
@@ -27,6 +28,7 @@ namespace CS_Homework
         internal void StartGame()
         {
             int msgTimer = 0;
+            int damaged = 0;
             //초기화
             InitializeGame();
 
@@ -63,8 +65,18 @@ namespace CS_Homework
                         else
                             enemyList.RemoveAt(i--);
                     }
-                    //충돌판정
-                    int damaged = calculator.Collide(screenArr, player, enemyList);
+                    //미사일 이동
+                    for (int i = 0; i < missileList.Count; i++)
+                    {
+                        Missile missile = (Missile)missileList[i];
+                        missile.DeletePos(screenArr);
+                        if (++missile.XPos > WINDOW_WIDTH)
+                            missileList.RemoveAt(i--);
+                        else
+                            missile.SetPos(screenArr);
+                    }
+                    //적충돌판정
+                    damaged = calculator.Collide(screenArr, player, enemyList);
                     if (damaged > 0)
                     {
                         painter.DrawDescription(MsgType.DAMAGE, damaged);
@@ -72,6 +84,7 @@ namespace CS_Homework
                     }
                     if(--msgTimer < 0)
                         painter.DrawDescription(MsgType.CLEAR, 0);
+                    //미사일 충돌판정
 
 
 
@@ -101,6 +114,13 @@ namespace CS_Homework
                     case ConsoleKey.DownArrow: if (player.YPos < (WINDOW_HEIGHT - HEADER_HEIGHT - FOOTER_HEIGHT - 2)) player.YPos++; break;
                     case ConsoleKey.LeftArrow: if (player.XPos > 0 ) player.XPos--; break;
                     case ConsoleKey.RightArrow:if (player.XPos < WINDOW_WIDTH - 7) player.XPos++; break;
+                    case ConsoleKey.Spacebar:
+                        {
+                            Missile missile = new Missile(player.XPos + 5, player.YPos);
+                            missileList.Add(missile);
+                            missile.SetPos(screenArr);
+                        }
+                        break;
                 }
                 player.SetPos(screenArr);
             }
@@ -129,6 +149,7 @@ namespace CS_Homework
             player.SetPos(screenArr);
             random = new Random();
             enemyList = new ArrayList();
+            missileList = new ArrayList();
             calculator = new Calculator();
             frameCounter = 0;
 

@@ -17,7 +17,7 @@ namespace CS_Homework
         public const int FRAME_RATE = 1000 / 20;  //뒤에 숫자가 프레임레이트
         public const int ENEMY_FREQ = (1000 / FRAME_RATE) * 1; // 뒤에숫자가 몇초당 하나 생성
 
-        public enum Screen { BLANK = 1, PLAYER, D_LAUNCHER, ENEMY, S_LAUNCHER }
+        public enum Screen { BLANK = 1, PLAYER, D_LAUNCHER, ENEMY, S_LAUNCHER, BASIC_MISSILE }
         public enum MsgType { DAMAGE = 1, CLEAR }
         public enum WindowPos { LEFT = 0, MIDDLE, RIGHT }
 
