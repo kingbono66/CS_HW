@@ -18,7 +18,7 @@ namespace CS_Homework
         public const int ENEMY_FREQ = (1000 / FRAME_RATE) * 1; // 뒤에숫자가 몇초당 하나 생성
 
         public enum Screen { BLANK = 1, PLAYER, D_LAUNCHER, ENEMY, S_LAUNCHER, BASIC_MISSILE }
-        public enum MsgType { DAMAGE = 1, CLEAR }
+        public enum MsgType { DAMAGE = 1, CLEAR, EXP }
         public enum WindowPos { LEFT = 0, MIDDLE, RIGHT }
 
         public const int INITIAL_XPOS = 20;

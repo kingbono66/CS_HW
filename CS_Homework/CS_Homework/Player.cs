@@ -14,10 +14,13 @@ namespace CS_Homework
         private int hp;
         private int att;
 
+
         public int XPos { get => xPos; set => xPos = value; }
         public int YPos { get => yPos; set => yPos = value; }
         public int Hp { get => hp; set => hp = value; }
         public int Att { get => att; set => att = value; }
+        public int Exp { get; set; }
+        public int Level { get; set; }
 
         public Player(int x, int y)
         {
@@ -25,6 +28,7 @@ namespace CS_Homework
             YPos = y;
             hp = 100;
             att = 15;
+            Exp = 0;
         }
 
         public void SetPos(Screen[,] screenArr )

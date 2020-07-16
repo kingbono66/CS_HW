@@ -45,8 +45,9 @@ namespace CS_Homework
             SetCursorPosition(0, 0);
         }
 
-        internal void DrawGameInfo(int frameCounter, int playTime)
+        internal void DrawGameInfo(int frameCounter, int playTime, int score)
         {
+            ClearWindow(WindowPos.RIGHT);
             if (playTime == 0) return;
             SetCursorPosition(WINDOW_WIDTH * 2 / 3 + 2, WINDOW_HEIGHT - FOOTER_HEIGHT + 1); Write("경과시간/프레임레이트: ");
             ForegroundColor = ConsoleColor.Blue; 
@@ -54,7 +55,7 @@ namespace CS_Homework
             ForegroundColor = ConsoleColor.White;
             SetCursorPosition(WINDOW_WIDTH * 2 / 3 + 2, WINDOW_HEIGHT - FOOTER_HEIGHT + 2); Write("점수: ");
             ForegroundColor = ConsoleColor.Magenta;
-            Write("55");
+            Write(score);
 
 
             ForegroundColor = ConsoleColor.White;
@@ -66,7 +67,7 @@ namespace CS_Homework
             ClearWindow(WindowPos.LEFT);
             SetCursorPosition( 2, WINDOW_HEIGHT - FOOTER_HEIGHT + 1); Write("LEVEL: ");
             ForegroundColor = ConsoleColor.Yellow;
-            Write("1");
+            Write(player.Level);
             ForegroundColor = ConsoleColor.White;
             SetCursorPosition(2, WINDOW_HEIGHT - FOOTER_HEIGHT + 2); Write("HP/ATT: ");
             ForegroundColor = ConsoleColor.Yellow;
@@ -74,7 +75,7 @@ namespace CS_Homework
             ForegroundColor = ConsoleColor.White;
             SetCursorPosition(2, WINDOW_HEIGHT - FOOTER_HEIGHT + 3); Write("EXP: ");
             ForegroundColor = ConsoleColor.Yellow;
-            Write("44");
+            Write(player.Exp);
             ForegroundColor = ConsoleColor.White;
             SetCursorPosition(0,0);
         }
@@ -105,7 +106,7 @@ namespace CS_Homework
                             Write("-");
                             break;
                         case Screen.BASIC_MISSILE:
-                            Write("＠");
+                            Write("@");
                             break;
                         default: Write(" ");
                             break;
@@ -121,16 +122,27 @@ namespace CS_Homework
             ReadKey();
         }
 
-        internal void DrawDescription(MsgType msgType, int damaged)
+        internal void DrawDescription(MsgType msgType, int value)
         {
-            switch( msgType)
+            ClearWindow(WindowPos.MIDDLE);
+            switch ( msgType)
             {
-                case MsgType.DAMAGE: SetCursorPosition(WINDOW_WIDTH / 3 + 2, WINDOW_HEIGHT - FOOTER_HEIGHT + 1); Write("피격당했습니다");
+                case MsgType.DAMAGE: 
+                    SetCursorPosition(WINDOW_WIDTH / 3 + 2, WINDOW_HEIGHT - FOOTER_HEIGHT + 1); Write("피격당했습니다");
                     SetCursorPosition(WINDOW_WIDTH / 3 + 2, WINDOW_HEIGHT - FOOTER_HEIGHT + 2);
                     ForegroundColor = ConsoleColor.Red;
-                    Write($" {damaged}");
+                    Write($" {value}");
                     ForegroundColor = ConsoleColor.White;
                     Write("의 데미지를 입었습니다!!!");
+                    SetCursorPosition(0, 0);
+                    break;
+                case MsgType.EXP:
+                    SetCursorPosition(WINDOW_WIDTH / 3 + 2, WINDOW_HEIGHT - FOOTER_HEIGHT + 1); Write("경험치");
+                    SetCursorPosition(WINDOW_WIDTH / 3 + 2, WINDOW_HEIGHT - FOOTER_HEIGHT + 2);
+                    ForegroundColor = ConsoleColor.Blue;
+                    Write($" {value}");
+                    ForegroundColor = ConsoleColor.White;
+                    Write("을 획득했습니다");
                     SetCursorPosition(0, 0);
                     break;
                 case MsgType.CLEAR: ClearWindow(WindowPos.MIDDLE);                    

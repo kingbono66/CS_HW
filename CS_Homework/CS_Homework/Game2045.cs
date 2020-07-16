@@ -23,18 +23,16 @@ namespace CS_Homework
         private ArrayList missileList;
         private Calculator calculator;
         private int frameCounter;
-
+        private int msgTimer;
+        private int damaged;
+        private int getEXP;
+        private int score;
 
         internal void StartGame()
-        {
-            int msgTimer = 0;
-            int damaged = 0;
-            //초기화
+        {            
             InitializeGame();
-
-            //시작화면
             painter.DrawStartScreen();
-            timer.SetPlayTimeStart();
+            timer.SetPlayTimeStart(); //총플레이시간 카운트 시작
             while (true)
             {
                 //화면 그리기
@@ -42,57 +40,90 @@ namespace CS_Homework
                 if (isFooterChanged) painter.DrawFooter(); isFooterChanged = false;
                 painter.DrawMainScreen(screenArr);
                 painter.DrawPlayerInfo(player);
-                painter.DrawGameInfo(frameCounter, timer.GetPlayTime());
+                painter.DrawGameInfo(frameCounter, timer.GetPlayTime(), score);
                 //1프레임 사이클            
                 if (timer.IsElapsed())
                 {
                     frameCounter++;
-                    //사용자 조작
-                    PlayerProc();
+                    score++;
+                    PlayerProc(); //사용자 조작
                     FlushKey();
-                    //적 생성
-                    if (random.Next(0, ENEMY_FREQ) == 1)
-                    {
-                        Enemy enemy = new Enemy();
-                        enemyList.Add(enemy);
-                        enemy.SetPos(screenArr);
-                    }
-                    //적 이동
-                    for ( int i = 0; i < enemyList.Count; i++)
-                    {
-                        if (((Enemy)enemyList[i]).Move(screenArr))
-                            ((Enemy)enemyList[i]).SetPos(screenArr);
-                        else
-                            enemyList.RemoveAt(i--);
-                    }
-                    //미사일 이동
-                    for (int i = 0; i < missileList.Count; i++)
-                    {
-                        Missile missile = (Missile)missileList[i];
-                        missile.DeletePos(screenArr);
-                        if (++missile.XPos > WINDOW_WIDTH)
-                            missileList.RemoveAt(i--);
-                        else
-                            missile.SetPos(screenArr);
-                    }
-                    //적충돌판정
-                    damaged = calculator.Collide(screenArr, player, enemyList);
-                    if (damaged > 0)
-                    {
-                        painter.DrawDescription(MsgType.DAMAGE, damaged);
-                        msgTimer = MSG_DURATION * frameCounter / timer.GetPlayTime();
-                    }
-                    if(--msgTimer < 0)
-                        painter.DrawDescription(MsgType.CLEAR, 0);
-                    //미사일 충돌판정
-
-
-
+                    CreateEnemy();
+                    EnemyMove();
+                    MissileMove();
+                    VerifyCollision();
+                    UpdatePlayerInfo();
                 }
                 if (player.Hp <= 0)
                     break;
             }
             painter.DrawEnding();
+        }
+
+        private void UpdatePlayerInfo()
+        {
+            if (player.Exp >= player.Level * 100)
+            {
+                calculator.PlayerLevelUp(player);
+                painter.DrawPlayerInfo(player);
+            }
+        }
+
+        private void VerifyCollision()
+        {
+            //적 충돌판정 받은 데미지를 리턴
+            damaged = calculator.Collide(screenArr, player, enemyList);
+            if (damaged > 0)
+            {
+                painter.DrawDescription(MsgType.DAMAGE, damaged);
+                msgTimer = MSG_DURATION * frameCounter / timer.GetPlayTime();
+                score -= damaged * 100;
+            }
+            //미사일 충돌판정 적 격파시 총 획득 경험치 리턴
+            getEXP = calculator.MissileCollide(screenArr, missileList, enemyList, player.Att);
+            if (getEXP > 0)
+            {
+                player.Exp += getEXP;
+                score += getEXP*10;
+                painter.DrawDescription(MsgType.EXP, getEXP);
+                msgTimer = MSG_DURATION * frameCounter / timer.GetPlayTime();                
+            }
+            if (--msgTimer < 0)
+                painter.DrawDescription(MsgType.CLEAR, 0);
+        }
+
+        private void MissileMove()
+        {
+            for (int i = 0; i < missileList.Count; i++)
+            {
+                Missile missile = (Missile)missileList[i];
+                missile.DeletePos(screenArr);
+                if (++missile.XPos > WINDOW_WIDTH)
+                    missileList.RemoveAt(i--);
+                else
+                    missile.SetPos(screenArr);
+            }
+        }
+
+        private void EnemyMove()
+        {
+            for (int i = 0; i < enemyList.Count; i++)
+            {
+                if (((Enemy)enemyList[i]).Move(screenArr, player.YPos))
+                    ((Enemy)enemyList[i]).SetPos(screenArr);
+                else
+                    enemyList.RemoveAt(i--);
+            }
+        }
+
+        private void CreateEnemy()
+        {
+            if (random.Next(0, ENEMY_FREQ) == 1)
+            {
+                Enemy enemy = new Enemy();
+                enemyList.Add(enemy);
+                enemy.SetPos(screenArr);
+            }
         }
 
         private void FlushKey()
@@ -126,9 +157,6 @@ namespace CS_Homework
             }
         }
 
-        
-        
-
         private void InitializeGame()
         {
             SetWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -152,15 +180,10 @@ namespace CS_Homework
             missileList = new ArrayList();
             calculator = new Calculator();
             frameCounter = 0;
-
-
+            msgTimer = 0;
+            score = 0;
 
             Clear();
         }
-        
     }
-
-   
-
-
 }

@@ -9,25 +9,26 @@ namespace CS_Homework
 {
     class Enemy
     {
-        private int originYPos;
         private int att;
         private int hp;
         private double currentXPos;
         private double currentYPos;
+        
         Random random = new Random();
 
         public double CurrentXPos { get => currentXPos; set => currentXPos = value; }
         public double CurrentYPos { get => currentYPos; set => currentYPos = value; }
         public int Att { get => att; set => att = value; }
         public int Hp { get => hp; set => hp = value; }
+        public int Exp { get; }
 
         public Enemy()
         {
             att = 10;
             hp = 50;
-            originYPos = random.Next(0, WINDOW_HEIGHT - HEADER_HEIGHT - FOOTER_HEIGHT);
             currentXPos = WINDOW_WIDTH - 2;
-            currentYPos = originYPos;
+            currentYPos = random.Next(0, WINDOW_HEIGHT - HEADER_HEIGHT - FOOTER_HEIGHT);
+            Exp = 20;
         }
         
         internal void SetPos(Screen[,] screenArr)
@@ -38,15 +39,16 @@ namespace CS_Homework
             screenArr[(int)currentXPos + 1, (int)currentYPos + 1] = Screen.ENEMY;
         }
 
-        internal bool Move(Screen[,] screenArr)
+        internal bool Move(Screen[,] screenArr, int playerYPos)
         {
             DeletePos(screenArr);
-            currentXPos -= 0.2;
-            if (random.Next(0, 2) == 1)
+            currentXPos -= 0.3;
+            if( playerYPos > CurrentYPos )
                 currentYPos += 0.2;
-            else
+            else if(playerYPos < CurrentYPos)
                 currentYPos -= 0.2;
-            if (currentXPos < 1 || currentYPos < 1 || currentYPos > WINDOW_HEIGHT - HEADER_HEIGHT - FOOTER_HEIGHT - 4)
+
+            if (currentXPos < 1)
                 return false;
             else
                 return true;
