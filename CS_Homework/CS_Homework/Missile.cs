@@ -7,7 +7,7 @@ using static CS_Homework.Constants;
 
 namespace CS_Homework
 {
-    class Missile
+    class Missile : ICoordinateable
     {
         public int XPos { get; set; }
         public int YPos { get; set; }
@@ -18,13 +18,7 @@ namespace CS_Homework
             YPos = yPos;
         }
 
-        public void SetPos(Screen[,] screenArr)
-        {
-            screenArr[XPos, YPos] = Screen.BASIC_MISSILE;
-        }
-        public void DeletePos(Screen[,] screenArr)
-        {
-            screenArr[XPos, YPos] = Screen.BLANK;
-        }
+        public void SetPos(Screen[,] screenArr) => screenArr[XPos, YPos] = Screen.BASIC_MISSILE;
+        public void DeletePos(Screen[,] screenArr) => screenArr[XPos, YPos] = Screen.BLANK;
     }
 }

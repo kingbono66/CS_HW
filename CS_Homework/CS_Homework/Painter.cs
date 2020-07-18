@@ -11,9 +11,6 @@ namespace CS_Homework
 {
     class Painter
     {
-
-
-
         public void DrawHeader()
         {
             ClearLines(0, HEADER_HEIGHT);            
@@ -25,10 +22,31 @@ namespace CS_Homework
             SetCursorPosition((WINDOW_WIDTH - TITLE.Length) / 2, HEADER_HEIGHT / 2);
             ForegroundColor = ConsoleColor.Green;
             Write(TITLE);
-            SetCursorPosition(WINDOW_WIDTH - (DESCRIPTION.Length + 1), HEADER_HEIGHT / 2 + 1);
+            SetCursorPosition(WINDOW_WIDTH - (DESCRIPTION.Length + 6), HEADER_HEIGHT -2 );
             ForegroundColor = ConsoleColor.Blue;
             Write(DESCRIPTION);
             ForegroundColor = ConsoleColor.White;
+
+            //설명서
+            SetCursorPosition(2, 1);
+            Write("적종류");
+            SetCursorPosition(2, 2);
+            Write("노랑:레벨1  초록:레벨2  ");
+            SetCursorPosition(2, 3);
+            Write("파랑:레벨3  빨강:파괴불가(스킬로만 가능)");
+            SetCursorPosition(2, 4);
+            Write("스테이지1: 레벨1만 나옴");
+            SetCursorPosition(2, 5);
+            Write("스테이지2: 레벨1,2,3 나옴");
+            SetCursorPosition(2, 6);
+            Write("스테이지3: 모든적 나옴");
+
+
+
+
+
+
+
             SetCursorPosition(0, 0);
         }
         public void DrawFooter()
@@ -57,7 +75,6 @@ namespace CS_Homework
             ForegroundColor = ConsoleColor.Magenta;
             Write(score);
 
-
             ForegroundColor = ConsoleColor.White;
             SetCursorPosition(0,0);
         }
@@ -80,6 +97,15 @@ namespace CS_Homework
             SetCursorPosition(0,0);
         }
 
+        internal void DrawPause()
+        {
+            SetCursorPosition(WINDOW_WIDTH / 3, HEADER_HEIGHT + 4);
+            ForegroundColor = ConsoleColor.Magenta;
+            Write("P    A    U    S    E");
+            ForegroundColor = ConsoleColor.White;
+            SetCursorPosition(0, 0);
+        }
+
         internal void DrawMainScreen(Screen[,] screenArr)
         {
             int screenHeiht = WINDOW_HEIGHT - FOOTER_HEIGHT;
@@ -97,7 +123,22 @@ namespace CS_Homework
                         case Screen.D_LAUNCHER:
                             Write("=");
                             break;
-                        case Screen.ENEMY:
+                        case Screen.ENEMY1:
+                            BackgroundColor = ConsoleColor.Yellow;
+                            Write(" ");
+                            BackgroundColor = ConsoleColor.Black;
+                            break;
+                        case Screen.ENEMY2:
+                            BackgroundColor = ConsoleColor.Green;
+                            Write(" ");
+                            BackgroundColor = ConsoleColor.Black;
+                            break;
+                        case Screen.ENEMY3:
+                            BackgroundColor = ConsoleColor.Blue;
+                            Write(" ");
+                            BackgroundColor = ConsoleColor.Black;
+                            break;
+                        case Screen.ENEMY9:
                             BackgroundColor = ConsoleColor.Red;
                             Write(" ");
                             BackgroundColor = ConsoleColor.Black;
@@ -144,9 +185,7 @@ namespace CS_Homework
                     ForegroundColor = ConsoleColor.White;
                     Write("을 획득했습니다");
                     SetCursorPosition(0, 0);
-                    break;
-                case MsgType.CLEAR: ClearWindow(WindowPos.MIDDLE);                    
-                    break;
+                    break;                
                 default: break;
             }
 
@@ -198,8 +237,5 @@ namespace CS_Homework
             WriteLine("아무키나 누르세요"); ReadKey();
             Clear();
         }
-        
     }
-
-    
 }

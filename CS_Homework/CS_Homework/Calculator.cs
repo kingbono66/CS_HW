@@ -18,8 +18,8 @@ namespace CS_Homework
             int playerY = player.YPos;
             foreach(Enemy e in enemyList)
             {
-                int enemyX = (int)e.CurrentXPos;
-                int enemyY = (int)e.CurrentYPos;
+                int enemyX = (int)e.XPos;
+                int enemyY = (int)e.YPos;
                 if (( playerY == enemyY + 1 && playerX - enemyX <= -1 && playerX - enemyX >= - 3)
                     ||(playerY == enemyY && playerX - enemyX <= 1 && playerX - enemyX >= -6)
                     ||(playerY == enemyY - 1 && playerX - enemyX <= 1 && playerX - enemyX >= -5))
@@ -43,8 +43,8 @@ namespace CS_Homework
 
             for (int i = 0; i < enemyList.Count; i++)
             {
-                enemyX = (int)((Enemy)enemyList[i]).CurrentXPos;
-                enemyY = (int)((Enemy)enemyList[i]).CurrentYPos;
+                enemyX = (int)((Enemy)enemyList[i]).XPos;
+                enemyY = (int)((Enemy)enemyList[i]).YPos;
                 for (int j = 0; j < missileList.Count; j++)
                 {
                     missile = (Missile)missileList[j];

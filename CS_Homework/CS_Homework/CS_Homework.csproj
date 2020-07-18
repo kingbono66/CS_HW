@@ -44,9 +44,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Calculator.cs" />
+    <Compile Include="Character.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Enemy.cs" />
     <Compile Include="Game2045.cs" />
+    <Compile Include="ICoordinateable.cs" />
     <Compile Include="Missile.cs" />
     <Compile Include="Painter.cs" />
     <Compile Include="Player.cs" />

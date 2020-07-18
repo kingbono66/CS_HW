@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Console;
 using static CS_Homework.Constants;
+using System.Media;
+using System.Runtime;
 
 namespace CS_Homework
 {
@@ -27,6 +29,8 @@ namespace CS_Homework
         private int damaged;
         private int getEXP;
         private int score;
+        private GameState gameState;
+        private GameState stageTemp;
 
         internal void StartGame()
         {            
@@ -35,29 +39,55 @@ namespace CS_Homework
             timer.SetPlayTimeStart(); //총플레이시간 카운트 시작
             while (true)
             {
-                //화면 그리기
-                if (isHeaderChanged) painter.DrawHeader(); isHeaderChanged = false;
-                if (isFooterChanged) painter.DrawFooter(); isFooterChanged = false;
-                painter.DrawMainScreen(screenArr);
-                painter.DrawPlayerInfo(player);
-                painter.DrawGameInfo(frameCounter, timer.GetPlayTime(), score);
-                //1프레임 사이클            
-                if (timer.IsElapsed())
+                switch(gameState)
                 {
-                    frameCounter++;
-                    score++;
-                    PlayerProc(); //사용자 조작
-                    FlushKey();
-                    CreateEnemy();
-                    EnemyMove();
-                    MissileMove();
-                    VerifyCollision();
-                    UpdatePlayerInfo();
+                    case GameState.PAUSE: GamePause(); break;
+                    case GameState.ENDING: painter.DrawEnding(); break;
+                    case GameState.LEVELUP:         break;
+                    case GameState.STAGE1:
+                    case GameState.STAGE2:
+                    case GameState.STAGE3:
+                        {
+                            //화면 그리기
+                            if (isHeaderChanged) painter.DrawHeader(); isHeaderChanged = false;
+                            if (isFooterChanged) painter.DrawFooter(); isFooterChanged = false;
+                            painter.DrawMainScreen(screenArr);
+                            painter.DrawPlayerInfo(player);
+                            painter.DrawGameInfo(frameCounter, timer.GetPlayTime(), score);
+                            //1프레임 사이클            
+                            if (timer.IsElapsed())
+                            {
+                                frameCounter++;
+                                score++;
+                                PlayerProc(); //사용자 조작
+                                FlushKey();
+                                CreateEnemy();
+                                EnemyMove();
+                                MissileMove();
+                                VerifyCollision();
+                                UpdatePlayerInfo();
+                            }
+                            if (player.Hp <= 0)
+                                gameState = GameState.ENDING;
+                        }
+                        break;
                 }
-                if (player.Hp <= 0)
-                    break;
+                if (gameState == GameState.ENDING)
+                    break;                  
             }
-            painter.DrawEnding();
+        }
+
+        private void GamePause()
+        {
+            painter.DrawPause();            
+            while (true)
+            {
+                if (ReadKey(true).Key == ConsoleKey.P)
+                {
+                    gameState = stageTemp;
+                    break;
+                }
+            }
         }
 
         private void UpdatePlayerInfo()
@@ -77,7 +107,6 @@ namespace CS_Homework
             {
                 painter.DrawDescription(MsgType.DAMAGE, damaged);
                 msgTimer = MSG_DURATION * frameCounter / timer.GetPlayTime();
-                score -= damaged * 100;
             }
             //미사일 충돌판정 적 격파시 총 획득 경험치 리턴
             getEXP = calculator.MissileCollide(screenArr, missileList, enemyList, player.Att);
@@ -120,7 +149,7 @@ namespace CS_Homework
         {
             if (random.Next(0, ENEMY_FREQ) == 1)
             {
-                Enemy enemy = new Enemy();
+                Enemy enemy = new Enemy(WINDOW_WIDTH - 2, random.Next(0, WINDOW_HEIGHT - HEADER_HEIGHT - FOOTER_HEIGHT), random.Next(1,10));
                 enemyList.Add(enemy);
                 enemy.SetPos(screenArr);
             }
@@ -152,6 +181,7 @@ namespace CS_Homework
                             missile.SetPos(screenArr);
                         }
                         break;
+                    case ConsoleKey.P: stageTemp = gameState; gameState = GameState.PAUSE;  break;
                 }
                 player.SetPos(screenArr);
             }
@@ -182,7 +212,11 @@ namespace CS_Homework
             frameCounter = 0;
             msgTimer = 0;
             score = 0;
+            gameState = GameState.STAGE1;
 
+            SoundPlayer soundPlayer = new SoundPlayer();
+            soundPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\bgm.wav";
+            soundPlayer.Play();
             Clear();
         }
     }
