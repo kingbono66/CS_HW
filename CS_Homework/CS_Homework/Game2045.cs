@@ -224,6 +224,9 @@ namespace CS_Homework
                         }
                         break;
                     case ConsoleKey.P: stageTemp = gameState; gameState = GameState.PAUSE;  break;
+                    case ConsoleKey.Z: player.Blink(screenArr, enemyList, calculator); break;
+                    case ConsoleKey.X: player.Excalibur(screenArr, enemyList);  break;
+                    case ConsoleKey.C: player.Heal();  break;
                 }
                 player.SetPos(screenArr);
             }
@@ -270,7 +273,7 @@ namespace CS_Homework
                 soundPlayer.Play();
                 WriteLine("배경음악 재생 합니다");
             }
-            catch (FileNotFoundException e)
+            catch (FileNotFoundException)
             {
                 WriteLine("bgm파일이 없습니다. 음악 없이 플레이 합니다");
             }

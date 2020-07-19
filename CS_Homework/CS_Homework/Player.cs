@@ -49,5 +49,37 @@ namespace CS_Homework
             screenArr[XPos + 5, YPos + 1] = Screen.BLANK;
             screenArr[XPos + 6, YPos + 1] = Screen.BLANK;
         }
+
+        internal void Blink(Screen[,] screenArr, System.Collections.ArrayList enemyList, Calculator calculator)
+        {
+            DeletePos(screenArr);
+            XPos += 25;
+            if (XPos > WINDOW_WIDTH - 8) XPos = WINDOW_WIDTH - 8;
+            for(int i = 0; i < 10; i++)
+            {
+                int damage = calculator.Collide(screenArr, this, enemyList);
+                Hp += damage;
+            }
+            SetPos(screenArr);
+        }
+
+        internal void Excalibur(Screen[,] screenArr, System.Collections.ArrayList enemyList)
+        {
+            Enemy e;
+            for( int i = 0; i < enemyList.Count; i++)
+            {
+                e = (Enemy)enemyList[i];
+                if ( e.XPos >= XPos+2 && e.XPos <= XPos+25 && e.YPos >= YPos - 10 && e.YPos <= YPos + 4)
+                {
+                    e.DeletePos(screenArr);
+                    enemyList.RemoveAt(i--);
+                }
+            }
+        }
+
+        internal void Heal()
+        {
+            Hp += 50;
+        }
     }
 }

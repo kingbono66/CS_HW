@@ -114,10 +114,7 @@ namespace CS_Homework
 
         internal void DrawPause()
         {
-            SetCursorPosition(WINDOW_WIDTH / 3, HEADER_HEIGHT + 4);
-            ForegroundColor = ConsoleColor.Magenta;
-            Write("P    A    U    S    E");
-            ForegroundColor = ConsoleColor.White;
+            DrawLine(WINDOW_WIDTH / 3, HEADER_HEIGHT + 4, ConsoleColor.Magenta, "P    A    U    S    E");           
             SetCursorPosition(0, 0);
         }
 
