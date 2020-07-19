@@ -41,11 +41,18 @@ namespace CS_Homework
         internal bool Move(Screen[,] screenArr, int playerYPos)
         {
             DeletePos(screenArr);
-            XPos -= 0.3;
+            double extra = 0.0;
+            if (enemyType == Screen.ENEMY2) extra = 0.1;
+            if (enemyType == Screen.ENEMY3) extra = 0.2;
+            if (enemyType == Screen.ENEMY9) extra = 0.5;
+            XPos -= (0.3 + extra);
+
+            /*
             if(playerYPos > (int)YPos )
                 YPos += 0.2;
             else if(playerYPos < (int)YPos)
                 YPos -= 0.2;
+            */
 
             if (XPos < 1)
                 return false;

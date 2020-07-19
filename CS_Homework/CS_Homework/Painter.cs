@@ -39,7 +39,7 @@ namespace CS_Homework
             SetCursorPosition(2, 5);
             Write("스테이지2: 레벨1,2,3 나옴");
             SetCursorPosition(2, 6);
-            Write("스테이지3: 모든적 나옴");
+            Write("스테이지3: 레벨1만 안나옴");
 
 
 
@@ -63,17 +63,27 @@ namespace CS_Homework
             SetCursorPosition(0, 0);
         }
 
-        internal void DrawGameInfo(int frameCounter, int playTime, int score)
+        internal void DrawGameInfo(int frameCounter, int playTime, int score, int defeatNum, GameState gameState)
         {
             ClearWindow(WindowPos.RIGHT);
             if (playTime == 0) return;
-            SetCursorPosition(WINDOW_WIDTH * 2 / 3 + 2, WINDOW_HEIGHT - FOOTER_HEIGHT + 1); Write("경과시간/프레임레이트: ");
+
+            SetCursorPosition(WINDOW_WIDTH * 2 / 3 + 2, WINDOW_HEIGHT - FOOTER_HEIGHT + 1); Write("진행도: ");
+            ForegroundColor = ConsoleColor.Magenta;
+            Write((int)gameState + "스테이지");
+            ForegroundColor = ConsoleColor.White;
+            SetCursorPosition(WINDOW_WIDTH * 2 / 3 + 2, WINDOW_HEIGHT - FOOTER_HEIGHT + 2); Write("경과시간/프레임레이트: ");
             ForegroundColor = ConsoleColor.Blue; 
             Write(playTime + "초/ " + frameCounter / playTime + "fps");
             ForegroundColor = ConsoleColor.White;
-            SetCursorPosition(WINDOW_WIDTH * 2 / 3 + 2, WINDOW_HEIGHT - FOOTER_HEIGHT + 2); Write("점수: ");
+            SetCursorPosition(WINDOW_WIDTH * 2 / 3 + 2, WINDOW_HEIGHT - FOOTER_HEIGHT + 3); Write("점수: ");
             ForegroundColor = ConsoleColor.Magenta;
             Write(score);
+            ForegroundColor = ConsoleColor.White;
+            SetCursorPosition(WINDOW_WIDTH * 2 / 3 + 2, WINDOW_HEIGHT - FOOTER_HEIGHT + 4); Write("적 격파수: ");
+            ForegroundColor = ConsoleColor.Blue;
+            Write(defeatNum);
+
 
             ForegroundColor = ConsoleColor.White;
             SetCursorPosition(0,0);
@@ -82,19 +92,24 @@ namespace CS_Homework
         internal void DrawPlayerInfo(Player player)
         {
             ClearWindow(WindowPos.LEFT);
-            SetCursorPosition( 2, WINDOW_HEIGHT - FOOTER_HEIGHT + 1); Write("LEVEL: ");
-            ForegroundColor = ConsoleColor.Yellow;
-            Write(player.Level);
-            ForegroundColor = ConsoleColor.White;
-            SetCursorPosition(2, WINDOW_HEIGHT - FOOTER_HEIGHT + 2); Write("HP/ATT: ");
-            ForegroundColor = ConsoleColor.Yellow;
-            Write(player.Hp + " / " + player.Att);
-            ForegroundColor = ConsoleColor.White;
-            SetCursorPosition(2, WINDOW_HEIGHT - FOOTER_HEIGHT + 3); Write("EXP: ");
-            ForegroundColor = ConsoleColor.Yellow;
-            Write(player.Exp);
-            ForegroundColor = ConsoleColor.White;
-            SetCursorPosition(0,0);
+            DrawLine(2, WINDOW_HEIGHT - FOOTER_HEIGHT + 1, ConsoleColor.White, "LEVEL: ");
+            DrawLine(8, WINDOW_HEIGHT - FOOTER_HEIGHT + 1, ConsoleColor.Yellow, player.Level.ToString());
+            DrawLine(2, WINDOW_HEIGHT - FOOTER_HEIGHT + 2, ConsoleColor.White, "HP: ");
+            DrawLine(8, WINDOW_HEIGHT - FOOTER_HEIGHT + 2, ConsoleColor.Yellow, player.Hp.ToString());
+            DrawLine(2, WINDOW_HEIGHT - FOOTER_HEIGHT + 3, ConsoleColor.White, "ATT: ");
+            DrawLine(8, WINDOW_HEIGHT - FOOTER_HEIGHT + 3, ConsoleColor.Yellow, player.Att.ToString());
+            DrawLine(2, WINDOW_HEIGHT - FOOTER_HEIGHT + 4, ConsoleColor.White, "EXP: ");
+            DrawLine(8, WINDOW_HEIGHT - FOOTER_HEIGHT + 4, ConsoleColor.Yellow, player.Exp.ToString());
+
+            DrawLine(20, WINDOW_HEIGHT - FOOTER_HEIGHT + 1, ConsoleColor.Red, "스킬");
+            DrawLine(20, WINDOW_HEIGHT - FOOTER_HEIGHT + 2, ConsoleColor.White, "LEVEL1: ");
+            DrawLine(30, WINDOW_HEIGHT - FOOTER_HEIGHT + 2, ConsoleColor.Green, "Blink");
+            DrawLine(20, WINDOW_HEIGHT - FOOTER_HEIGHT + 3, ConsoleColor.White, "LEVEL2: ");
+            DrawLine(30, WINDOW_HEIGHT - FOOTER_HEIGHT + 3, ConsoleColor.Green, "ExCalibur");
+            DrawLine(20, WINDOW_HEIGHT - FOOTER_HEIGHT + 4, ConsoleColor.White, "LEVEL3: ");
+            DrawLine(30, WINDOW_HEIGHT - FOOTER_HEIGHT + 4, ConsoleColor.Green, "Heal");
+
+            SetCursorPosition(0, 0);
         }
 
         internal void DrawPause()
@@ -156,11 +171,40 @@ namespace CS_Homework
             }
         }
 
-        internal void DrawEnding()
+        internal void DrawEnding(Player player, int score, int playTime, int defeatNum)
         {
             Clear();
-            WriteLine("끝");
+            SetWindowSize(51, 11);
+            for (int i = 0; i < 50; i++)
+                Write("=");
+            for (int i = 0; i < 10; i++)
+                WriteLine();
+            for (int i = 0; i < 50; i++)
+                Write("=");
+            DrawVertical(0, 0, 11);
+            DrawVertical(50, 0, 11);
+            if(player.Hp <= 0)
+                DrawLine(2,2, ConsoleColor.White,"GAME OVER");
+            else
+                DrawLine(2,2, ConsoleColor.White,"클리어를 축하합니다");
+            DrawLine(2, 3, ConsoleColor.White, "남은 HP: ");
+            DrawLine(18, 3, ConsoleColor.Green, player.Hp.ToString());
+            DrawLine(2, 4, ConsoleColor.White, "적 격파수: ");
+            DrawLine(18, 5, ConsoleColor.Green, defeatNum.ToString());
+            DrawLine(2, 5, ConsoleColor.White, "총플레이타임: ");
+            DrawLine(18, 5, ConsoleColor.Green, playTime.ToString());
+            DrawLine(2, 6, ConsoleColor.White, "점수: ");
+            DrawLine(18, 6, ConsoleColor.Green, score.ToString());
+            DrawLine(14, 8, ConsoleColor.Red, "아무키나 누르고 종료하세요");
             ReadKey();
+        }
+
+        private void DrawLine(int x, int y, ConsoleColor color, string s)
+        {
+            SetCursorPosition(x, y);
+            ForegroundColor = color;
+            Write(s);
+            ForegroundColor = ConsoleColor.White;
         }
 
         internal void DrawDescription(MsgType msgType, int value)

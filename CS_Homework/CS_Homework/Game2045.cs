@@ -9,6 +9,7 @@ using static System.Console;
 using static CS_Homework.Constants;
 using System.Media;
 using System.Runtime;
+using System.IO;
 
 namespace CS_Homework
 {
@@ -31,10 +32,12 @@ namespace CS_Homework
         private int score;
         private GameState gameState;
         private GameState stageTemp;
+        private int defeatNum;
 
         internal void StartGame()
         {            
             InitializeGame();
+            PlaySound();
             painter.DrawStartScreen();
             timer.SetPlayTimeStart(); //총플레이시간 카운트 시작
             while (true)
@@ -42,7 +45,7 @@ namespace CS_Homework
                 switch(gameState)
                 {
                     case GameState.PAUSE: GamePause(); break;
-                    case GameState.ENDING: painter.DrawEnding(); break;
+                    case GameState.ENDING: painter.DrawEnding(player, score, timer.GetPlayTime(), defeatNum); gameState = GameState.FINISH; break;
                     case GameState.LEVELUP:         break;
                     case GameState.STAGE1:
                     case GameState.STAGE2:
@@ -53,7 +56,7 @@ namespace CS_Homework
                             if (isFooterChanged) painter.DrawFooter(); isFooterChanged = false;
                             painter.DrawMainScreen(screenArr);
                             painter.DrawPlayerInfo(player);
-                            painter.DrawGameInfo(frameCounter, timer.GetPlayTime(), score);
+                            painter.DrawGameInfo(frameCounter, timer.GetPlayTime(), score, defeatNum, gameState);
                             //1프레임 사이클            
                             if (timer.IsElapsed())
                             {
@@ -69,12 +72,29 @@ namespace CS_Homework
                             }
                             if (player.Hp <= 0)
                                 gameState = GameState.ENDING;
+                            StageAdjust();
                         }
                         break;
                 }
-                if (gameState == GameState.ENDING)
+                if (gameState == GameState.FINISH)
                     break;                  
             }
+        }
+
+        private void StageAdjust()
+        {
+            if (gameState == GameState.STAGE1 && timer.GetPlayTime() > STAGE1_LENGTH)
+                gameState = GameState.STAGE2;
+            else if (gameState == GameState.STAGE2 && timer.GetPlayTime() > STAGE2_LENGTH)
+                gameState = GameState.STAGE3;
+            else if (gameState == GameState.STAGE3 && timer.GetPlayTime() > STAGE3_LENGTH)
+                gameState = GameState.ENDING;
+            else
+                return;
+
+            foreach (Enemy e in enemyList)
+                e.DeletePos(screenArr);
+            enemyList = new ArrayList();
         }
 
         private void GamePause()
@@ -109,7 +129,7 @@ namespace CS_Homework
                 msgTimer = MSG_DURATION * frameCounter / timer.GetPlayTime();
             }
             //미사일 충돌판정 적 격파시 총 획득 경험치 리턴
-            getEXP = calculator.MissileCollide(screenArr, missileList, enemyList, player.Att);
+            getEXP = calculator.MissileCollide(screenArr, missileList, enemyList, player.Att, ref defeatNum);
             if (getEXP > 0)
             {
                 player.Exp += getEXP;
@@ -147,9 +167,31 @@ namespace CS_Homework
 
         private void CreateEnemy()
         {
-            if (random.Next(0, ENEMY_FREQ) == 1)
+            if(frameCounter%5==0)
             {
-                Enemy enemy = new Enemy(WINDOW_WIDTH - 2, random.Next(0, WINDOW_HEIGHT - HEADER_HEIGHT - FOOTER_HEIGHT), random.Next(1,10));
+                Enemy enemy;
+                int xPos = WINDOW_WIDTH - 2;
+                int yPos = random.Next(0, WINDOW_HEIGHT - HEADER_HEIGHT - FOOTER_HEIGHT);
+                switch (gameState)
+                {
+                    case GameState.STAGE2: 
+                        if(frameCounter % 3 == 0)
+                            enemy = new Enemy(xPos, yPos, (int)EnemyType.LEVEL1); 
+                        else if (frameCounter % 3 == 1)
+                            enemy = new Enemy(xPos, yPos, (int)EnemyType.LEVEL2);
+                        else
+                            enemy = new Enemy(xPos, yPos, (int)EnemyType.LEVEL3);
+                        break;
+                    case GameState.STAGE3:
+                        if (frameCounter % 3 == 0)
+                            enemy = new Enemy(xPos, yPos, (int)EnemyType.LEVEL2);
+                        else if (frameCounter % 3 == 1)
+                            enemy = new Enemy(xPos, yPos, (int)EnemyType.LEVEL3);
+                        else
+                            enemy = new Enemy(xPos, yPos, (int)EnemyType.LEVEL9);
+                        break;
+                    default: enemy = new Enemy(xPos, yPos, (int)EnemyType.LEVEL1); break;  //stage1
+                }
                 enemyList.Add(enemy);
                 enemy.SetPos(screenArr);
             }
@@ -212,12 +254,30 @@ namespace CS_Homework
             frameCounter = 0;
             msgTimer = 0;
             score = 0;
+            defeatNum = 0;
             gameState = GameState.STAGE1;
 
-            SoundPlayer soundPlayer = new SoundPlayer();
-            soundPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\bgm.wav";
-            soundPlayer.Play();
+            
             Clear();
+        }
+
+        private void PlaySound()
+        {
+            try
+            {
+                SoundPlayer soundPlayer = new SoundPlayer();
+                soundPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\bgm.wav";
+                soundPlayer.Play();
+                WriteLine("배경음악 재생 합니다");
+            }
+            catch (FileNotFoundException e)
+            {
+                WriteLine("bgm파일이 없습니다. 음악 없이 플레이 합니다");
+            }
+            finally
+            {
+                WriteLine("배경음악 파일 이름은 bgm.wav 입니다");
+            }
         }
     }
 }

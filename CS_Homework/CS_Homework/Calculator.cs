@@ -34,7 +34,7 @@ namespace CS_Homework
             return damaged;
         }
 
-        internal int MissileCollide(Screen[,] screenArr, ArrayList missileList, ArrayList enemyList, int playerAtt)
+        internal int MissileCollide(Screen[,] screenArr, ArrayList missileList, ArrayList enemyList, int playerAtt, ref int defeatNum)
         {
             int getEXP = 0;
             int enemyX;
@@ -59,6 +59,7 @@ namespace CS_Homework
                 }
                 if (((Enemy)enemyList[i]).Hp <= 0)
                 {
+                    defeatNum++;
                     getEXP += ((Enemy)enemyList[i]).Exp;
                     ((Enemy)enemyList[i]).DeletePos(screenArr);
                     enemyList.RemoveAt(i--);
