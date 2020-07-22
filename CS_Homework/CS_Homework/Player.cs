@@ -12,7 +12,10 @@ namespace CS_Homework
 
         public int XPos { get; set; }
         public int YPos { get; set; }
-       
+        public int BlinkTime { get; set; }
+        public int ExcalTime { get; set; }
+        public int HealTime { get; set; }
+
         public Player(int x, int y)
         {
             XPos = x;
@@ -21,6 +24,9 @@ namespace CS_Homework
             Att = 15;
             Exp = 0;
             Level = 1;
+            BlinkTime = 0;
+            ExcalTime = 0;
+            HealTime = 0;
         }
 
         public void SetPos(Screen[,] screenArr )
@@ -53,7 +59,7 @@ namespace CS_Homework
         internal void Blink(Screen[,] screenArr, System.Collections.ArrayList enemyList, Calculator calculator)
         {
             DeletePos(screenArr);
-            XPos += 25;
+            XPos += BLINK_RANGE;
             if (XPos > WINDOW_WIDTH - 8) XPos = WINDOW_WIDTH - 8;
             for(int i = 0; i < 10; i++)
             {
@@ -61,6 +67,7 @@ namespace CS_Homework
                 Hp += damage;
             }
             SetPos(screenArr);
+            BlinkTime = BLINK_COOL_TIME;
         }
 
         internal void Excalibur(Screen[,] screenArr, System.Collections.ArrayList enemyList)
@@ -75,11 +82,27 @@ namespace CS_Homework
                     enemyList.RemoveAt(i--);
                 }
             }
+            ExcalTime = EXCAL_COOL_TIME;
         }
 
         internal void Heal()
         {
             Hp += 50;
+            HealTime = HEAL_COOL_TIME;
+        }
+
+        internal void RearrangeTime()
+        {
+            if (HealTime > 0) HealTime--;
+            if (ExcalTime > 0) ExcalTime--;
+            if (BlinkTime > 0) BlinkTime--;
+        }
+
+        internal void InitializeCool()
+        {
+            HealTime = 0;
+            ExcalTime = 0;
+            BlinkTime = 0;
         }
     }
 }

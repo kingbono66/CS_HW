@@ -10,6 +10,7 @@ using static CS_Homework.Constants;
 using System.Media;
 using System.Runtime;
 using System.IO;
+using System.Threading;
 
 namespace CS_Homework
 {
@@ -33,6 +34,7 @@ namespace CS_Homework
         private GameState gameState;
         private GameState stageTemp;
         private int defeatNum;
+        private int prevTime;
 
         internal void StartGame()
         {            
@@ -40,13 +42,14 @@ namespace CS_Homework
             PlaySound();
             painter.DrawStartScreen();
             timer.SetPlayTimeStart(); //총플레이시간 카운트 시작
+            prevTime = timer.GetPlayTime();
             while (true)
             {
-                switch(gameState)
+                switch (gameState)
                 {
                     case GameState.PAUSE: GamePause(); break;
                     case GameState.ENDING: painter.DrawEnding(player, score, timer.GetPlayTime(), defeatNum); gameState = GameState.FINISH; break;
-                    case GameState.LEVELUP:         break;
+                    case GameState.LEVELUP:         break;  //미구현
                     case GameState.STAGE1:
                     case GameState.STAGE2:
                     case GameState.STAGE3:
@@ -69,6 +72,7 @@ namespace CS_Homework
                                 MissileMove();
                                 VerifyCollision();
                                 UpdatePlayerInfo();
+                                ArrangeSkillTime();
                             }
                             if (player.Hp <= 0)
                                 gameState = GameState.ENDING;
@@ -78,6 +82,16 @@ namespace CS_Homework
                 }
                 if (gameState == GameState.FINISH)
                     break;                  
+            }
+        }
+
+        private void ArrangeSkillTime()
+        {
+            int time = timer.GetPlayTime();
+            if( prevTime != time)
+            {
+                prevTime = time;
+                player.RearrangeTime();
             }
         }
 
@@ -224,14 +238,69 @@ namespace CS_Homework
                         }
                         break;
                     case ConsoleKey.P: stageTemp = gameState; gameState = GameState.PAUSE;  break;
-                    case ConsoleKey.Z: player.Blink(screenArr, enemyList, calculator); break;
-                    case ConsoleKey.X: player.Excalibur(screenArr, enemyList);  break;
-                    case ConsoleKey.C: player.Heal();  break;
+                    case ConsoleKey.Z: 
+                        if( player.BlinkTime == 0)
+                        {
+                            player.Blink(screenArr, enemyList, calculator);
+                            EffectThreadProc(keys);
+                        }
+                        break;
+                    case ConsoleKey.X:
+                        if (player.Level > 1 && player.ExcalTime == 0)
+                        { 
+                            player.Excalibur(screenArr, enemyList);
+                            EffectThreadProc(keys);
+                        }
+                        break;
+                    case ConsoleKey.C:
+                        if (player.Level > 2 && player.HealTime == 0)
+                        {
+                            player.Heal();
+                            EffectThreadProc(keys);
+                        }
+                        break;
+                    case ConsoleKey.Q:
+                        player.InitializeCool();
+                        break;
+                    case ConsoleKey.W:
+                        player.Exp += 100;
+                        break;
+                    case ConsoleKey.E:
+                        player.Hp = 999999;
+                        break;
+                    case ConsoleKey.R:
+                        if (gameState == GameState.STAGE1)
+                            gameState = GameState.STAGE2; 
+                        else if (gameState == GameState.STAGE2) 
+                            gameState = GameState.STAGE3; 
+                        else if (gameState == GameState.STAGE3) 
+                            gameState = GameState.ENDING;
+                        break;
                 }
                 player.SetPos(screenArr);
             }
         }
 
+        private void EffectThreadProc(ConsoleKey keys)
+        {
+            ThreadClass thread;
+            if (keys == ConsoleKey.Z)
+                thread = new ThreadClass(screenArr, SkillType.BLINK, player.XPos, player.YPos, new ThreadClassCallBack(ResultCallback));
+            else if (keys == ConsoleKey.X)
+                thread = new ThreadClass(screenArr, SkillType.EXCALIBUR, player.XPos, player.YPos, new ThreadClassCallBack(ResultCallback));
+            else if (keys == ConsoleKey.C)
+                thread = new ThreadClass(screenArr, SkillType.HEAL, player.XPos, player.YPos, new ThreadClassCallBack(ResultCallback));
+            else
+                return;
+
+            (new Thread(new ThreadStart(thread.ThreadProc))).Start();
+        }
+
+        public void ResultCallback(bool isChanged)
+        {
+            //this.isHeaderChanged = isChanged;
+            //this.isFooterChanged = isChanged;
+        }
         private void InitializeGame()
         {
             SetWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -259,8 +328,9 @@ namespace CS_Homework
             score = 0;
             defeatNum = 0;
             gameState = GameState.STAGE1;
+            prevTime = 0;
 
-            
+
             Clear();
         }
 

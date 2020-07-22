@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using static System.Console;
 using static CS_Homework.Constants;
@@ -19,10 +20,11 @@ namespace CS_Homework
             DrawVertical(0, 0, HEADER_HEIGHT);
             DrawVertical(WINDOW_WIDTH - 1, 0, HEADER_HEIGHT);
 
-            SetCursorPosition((WINDOW_WIDTH - TITLE.Length) / 2, HEADER_HEIGHT / 2);
+            SetCursorPosition((WINDOW_WIDTH - TITLE.Length) * 3 / 4, HEADER_HEIGHT / 2);
             ForegroundColor = ConsoleColor.Green;
             Write(TITLE);
-            SetCursorPosition(WINDOW_WIDTH - (DESCRIPTION.Length + 6), HEADER_HEIGHT -2 );
+            //SetCursorPosition(WINDOW_WIDTH - (DESCRIPTION.Length + 6), HEADER_HEIGHT -2 );
+            SetCursorPosition((WINDOW_WIDTH - TITLE.Length) * 3 / 4, HEADER_HEIGHT / 2 + 1);
             ForegroundColor = ConsoleColor.Blue;
             Write(DESCRIPTION);
             ForegroundColor = ConsoleColor.White;
@@ -33,7 +35,7 @@ namespace CS_Homework
             SetCursorPosition(2, 2);
             Write("노랑:레벨1  초록:레벨2  ");
             SetCursorPosition(2, 3);
-            Write("파랑:레벨3  빨강:파괴불가(스킬로만 가능)");
+            Write("파랑:레벨3  빨강:파괴불가");
             SetCursorPosition(2, 4);
             Write("스테이지1: 레벨1만 나옴");
             SetCursorPosition(2, 5);
@@ -41,11 +43,27 @@ namespace CS_Homework
             SetCursorPosition(2, 6);
             Write("스테이지3: 레벨1만 안나옴");
 
+            SetCursorPosition(30, 1);
+            Write("치트키");
+            SetCursorPosition(30, 2);
+            Write("Q = 스킬쿨초기화");
+            SetCursorPosition(30, 3);
+            Write("W = 경험치100");
+            SetCursorPosition(30, 4);
+            Write("E = 무적");
+            SetCursorPosition(30, 5);
+            Write("R = 스테이지 스킵");
+            SetCursorPosition(30, 6);
+            Write("P = 잠시 멈춤");
 
-
-
-
-
+            SetCursorPosition(60, 1);
+            Write("스킬단축키");
+            SetCursorPosition(60, 2);
+            Write("Z = BLINK");
+            SetCursorPosition(60, 3);
+            Write("X = EXCALIBUR");
+            SetCursorPosition(60, 4);
+            Write("C = HEAL");
 
             SetCursorPosition(0, 0);
         }
@@ -101,13 +119,19 @@ namespace CS_Homework
             DrawLine(2, WINDOW_HEIGHT - FOOTER_HEIGHT + 4, ConsoleColor.White, "EXP: ");
             DrawLine(8, WINDOW_HEIGHT - FOOTER_HEIGHT + 4, ConsoleColor.Yellow, player.Exp.ToString());
 
-            DrawLine(20, WINDOW_HEIGHT - FOOTER_HEIGHT + 1, ConsoleColor.Red, "스킬");
-            DrawLine(20, WINDOW_HEIGHT - FOOTER_HEIGHT + 2, ConsoleColor.White, "LEVEL1: ");
-            DrawLine(30, WINDOW_HEIGHT - FOOTER_HEIGHT + 2, ConsoleColor.Green, "Blink");
-            DrawLine(20, WINDOW_HEIGHT - FOOTER_HEIGHT + 3, ConsoleColor.White, "LEVEL2: ");
-            DrawLine(30, WINDOW_HEIGHT - FOOTER_HEIGHT + 3, ConsoleColor.Green, "ExCalibur");
-            DrawLine(20, WINDOW_HEIGHT - FOOTER_HEIGHT + 4, ConsoleColor.White, "LEVEL3: ");
-            DrawLine(30, WINDOW_HEIGHT - FOOTER_HEIGHT + 4, ConsoleColor.Green, "Heal");
+            DrawLine(20, WINDOW_HEIGHT - FOOTER_HEIGHT + 1, ConsoleColor.Red, "스킬(쿨타임(초))");
+            DrawLine(20, WINDOW_HEIGHT - FOOTER_HEIGHT + 2, ConsoleColor.White, "LEVEL1:");            
+            DrawLine(27, WINDOW_HEIGHT - FOOTER_HEIGHT + 2, ConsoleColor.Green, "Blink(" + player.BlinkTime + ")");
+            DrawLine(20, WINDOW_HEIGHT - FOOTER_HEIGHT + 3, ConsoleColor.White, "LEVEL2:");
+            if( player.Level < 2 )
+                DrawLine(27, WINDOW_HEIGHT - FOOTER_HEIGHT + 3, ConsoleColor.Gray, "ExCalibur(" + player.ExcalTime + ")");
+            else
+                DrawLine(27, WINDOW_HEIGHT - FOOTER_HEIGHT + 3, ConsoleColor.Green, "ExCalibur(" + player.ExcalTime + ")");
+            DrawLine(20, WINDOW_HEIGHT - FOOTER_HEIGHT + 4, ConsoleColor.White, "LEVEL3:");
+            if( player.Level < 3)
+                DrawLine(27, WINDOW_HEIGHT - FOOTER_HEIGHT + 4, ConsoleColor.Gray, "Heal(" + player.HealTime + ")");
+            else
+                DrawLine(27, WINDOW_HEIGHT - FOOTER_HEIGHT + 4, ConsoleColor.Green, "Heal(" + player.HealTime + ")");
 
             SetCursorPosition(0, 0);
         }
@@ -160,6 +184,21 @@ namespace CS_Homework
                             break;
                         case Screen.BASIC_MISSILE:
                             Write("@");
+                            break;
+                        case Screen.BLINK:
+                            ForegroundColor = ConsoleColor.Yellow;
+                            Write("=");
+                            ForegroundColor = ConsoleColor.White;
+                            break;
+                        case Screen.EXCALIBUR:
+                            BackgroundColor = ConsoleColor.Red;
+                            Write(" ");
+                            BackgroundColor = ConsoleColor.Black;
+                            break;
+                        case Screen.HEAL:
+                            BackgroundColor = ConsoleColor.Green;
+                            Write(" ");
+                            BackgroundColor = ConsoleColor.Black;
                             break;
                         default: Write(" ");
                             break;
@@ -270,13 +309,11 @@ namespace CS_Homework
         public void DrawStartScreen()
         {
             WriteLine("게임을 시작합니다");
-
-
-
-
-
-            WriteLine("아무키나 누르세요"); ReadKey();
+            WriteLine("아무키나 누르세요"); 
+            ReadKey();
             Clear();
         }
+
+        
     }
 }

@@ -19,12 +19,17 @@ namespace CS_Homework
         public const int STAGE1_LENGTH = 100;
         public const int STAGE2_LENGTH = 250;
         public const int STAGE3_LENGTH = 450;
+        public const int BLINK_RANGE = 25;
+        public const int BLINK_COOL_TIME = 5;
+        public const int EXCAL_COOL_TIME = 10;
+        public const int HEAL_COOL_TIME = 20;
 
-        public enum Screen { BLANK, PLAYER, D_LAUNCHER, ENEMY1, ENEMY2, ENEMY3, ENEMY9, S_LAUNCHER, BASIC_MISSILE }
+        public enum Screen { BLANK, PLAYER, D_LAUNCHER, ENEMY1, ENEMY2, ENEMY3, ENEMY9, S_LAUNCHER, BASIC_MISSILE, HEAL, BLINK, EXCALIBUR }
         public enum MsgType { DAMAGE, CLEAR, EXP }
         public enum WindowPos { LEFT, MIDDLE, RIGHT }
         public enum GameState { STAGE1 = 1, STAGE2, STAGE3, PAUSE, LEVELUP, ENDING, FINISH }
         public enum EnemyType { LEVEL1 = 1, LEVEL2, LEVEL3, LEVEL9 = 9 }
+        public enum SkillType { BLINK, EXCALIBUR, HEAL}
 
         public const int INITIAL_XPOS = 20;
         public const int INITIAL_YPOS = 10;
